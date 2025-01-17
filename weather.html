@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Weather App</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet"
+</head>
+
+<style>
+   
+   *{
+	 font-family: "Oswald", serif;
+     font-weight: 800;
+     font-style: normal;
+   }
+   .card .container #input{
+	   background-color: transparent;
+	   border: 2px solid #060434;
+	   border-radius: 10px;
+	   height: 40px;
+	   width: 380px;
+	   transition: 0.3s linear;
+	   color: #060434;
+	   text-align: center;
+	   margin-bottom: 15px;
+   }
+
+
+   .card .container #input:focus{
+	   outline: none;
+	   height: 43px;
+	   background-color: transparent;
+	   border: 2px solid #060434;
+
+   }
+
+   .card .container #input:hover{
+	   cursor: pointer;
+   }
+
+
+   .card .container {
+	  margin-bottom: 4px;
+   }
+
+   .card .container #input::placeholder{
+	  color: #060434;
+	  text-align: center;
+
+   }
+
+   .card .container button{
+	  background-color: transparent;
+	  border: 2px solid  #060434;
+	  color: #060434;
+	  border-radius: 10px;
+	  padding: 6px;
+	  height: 40px;
+	  width: 200px;
+	  transition: 0.3s linear;
+   }
+
+   .card .container button:hover{
+      background-color: #060434;
+	  color: #fff;
+   }
+
+   .card h2{
+	color: #060434;
+   }
+
+   .card h5{
+	color: #060434;
+
+   }
+
+   .card .container h5{
+	color: red;
+   }
+
+
+	.card{
+		background-color: rgb(255, 255, 255);
+		box-shadow: 10px 10px 20px 20px #aeaeae75;
+		height: 400px;
+		width: 400px;
+		border: none;
+		border-radius: 20px;
+		position: absolute;
+		left: 40%;
+		top: 20%;
+		padding: 10px;
+
+	}
+	.loader{
+		height: 19px;
+		width: 19px;
+		background-color: transparent;
+		border-radius: 50%;
+		border: 8px solid grey;
+		border-top: 8px solid #060434;
+		animation: load 2s  linear infinite;
+	}
+
+	@keyframes load {
+		0%{
+			transform: rotate(0deg);
+		}
+		100%{
+            transform: rotate(360deg);
+		}
+	}
+
+
+	@media screen and (max-width: 850px) {
+		.card{
+			left: 1%;
+			width: 99%;
+		}
+
+		.card .container #input{
+			width: 300px;
+		}
+	}
+</style>
+
+<body>
+	<div class="card">
+		<h2>Weather App <img src="images/weather.png" alt="" height="48" width="48"></h2>
+		<div class="container">
+			<h5 id="error">Enter the city name</h5>
+			<input type="text" id="input" placeholder="Enter the City">
+			<button onclick="weather()">Search</button>
+		</div>
+		<div class="loader" id="load"></div>
+
+		<h5 id="name"></h5>
+		<h5 id="row"></h5>
+		<h5 id="main"></h5>
+		<h5 id="humidity"></h5>
+	</div>
+
+</body>
+
+<script>
+    document.getElementById('load').style.display="none";
+    document.getElementById('error').style.display="none";
+    let nameRegex = /^[a-zA-Z ]+$/;
+
+    function weather(){ 
+     //https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid=bfd446e95d6b0ca7d90e7189a5bf8767;
+     const city_name = document.getElementById('input').value;
+     const API_key = 'bfd446e95d6b0ca7d90e7189a5bf8767';
+     let api1 = `https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${API_key}`;
+     if(city_name === ''){
+         document.getElementById('error').style.display="block";
+     }else if(!city_name){
+        document.getElementById('error').style.display="block";
+     }else if(!nameRegex.test(city_name)){
+         document.getElementById('error').style.display="block";
+     }else{
+       document.getElementById('load').style.display="block";
+       fetch(api1).then(response => response.json())
+       .then(res => {console.log(res); setTimeout(function(){
+           document.getElementById('name').innerHTML = `<img src="images/city.png" alt="" height="18" width="18"> Name : ${res.name} `;
+           document.getElementById('row').innerHTML = ` <img src="images/longitude.png" alt="" height="18" width="18"> Longitude : ${res.coord.lat}, Latitude <img src="images/latitude.png" alt="" height="18" width="18"> : ${res.coord.lon}`;
+           document.getElementById('main').innerHTML = `<img src="images/temp.png" alt="" height="18" width="18"> Temp : ${res.main.temp} Min: ${res.main.temp_min} Max: ${res.main.temp_max}`;
+           document.getElementById('humidity').innerHTML = `<img src="images/humidity.png" alt="" height="18" width="18"> Humidity: ${res.main.humidity}</br>`;
+           document.getElementById('load').style.display="none"
+        },3000);
+     }).catch(error => console.log(error));
+}
+
+}
+
+</script> 
+
+
+</html>
